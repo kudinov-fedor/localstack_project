@@ -8,5 +8,9 @@ stop:
 
 
 provision:
-	tflocal init  # first run
-	tflocal apply
+	tflocal init
+	tflocal apply --auto-approve
+
+
+destroy:
+	tflocal destroy --auto-approve

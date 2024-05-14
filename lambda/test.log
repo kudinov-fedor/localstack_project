@@ -1,0 +1,3 @@
+{"cpu": 30, "timestamp": "foo"}
+{"cpu": 60, "timestamp": "foo"}
+{"cpu": 95, "timestamp": "foo"}
