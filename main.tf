@@ -8,11 +8,13 @@ resource "aws_s3_bucket" "test-bucket" {
 resource "aws_iam_role" "iam_for_lambda" {
   name = "iam_for_lambda"
 
-  # todo add accesses to IAM role
+  # todo add accesses to IAM role so that Lambda could
+  #  interact with S3, SQS and write logs for debug
+
   #  AmazonS3FullAccess
-  # AmazonSQSFullAccess
-  # AWSLambdaBasicExecutionRole
-  # AWSXRayDaemonWriteAccess
+  #  AmazonSQSFullAccess
+  #  AWSLambdaBasicExecutionRole
+  #  AWSXRayDaemonWriteAccess
 
   # Trusted entities
   assume_role_policy = <<EOF
