@@ -1,7 +1,7 @@
->>> pip install -r requirements.txt
+> pip install -r requirements.txt
 
->>> make start
+> make start
 
->>> make provision
+> make provision
 
->>> awslocal s3 ls 
+> awslocal s3 ls 
