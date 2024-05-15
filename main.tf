@@ -150,7 +150,8 @@ resource "aws_dynamodb_table_item" "seed_data" {
     "id": {"S": "${each.key}"},
     "level": {"S": "${each.value.level}"},
     "timestamp": {"S": "${each.value.timestamp}"},
-    "message": {"S": "${each.value.message}"}
+    "message": {"S": "${each.value.message}"},
+    "count": {"N": "1"}
   }
   ITEM
 }
