@@ -72,7 +72,7 @@ def handler(event, context):
                 #  and receive it as return value result of update
                 response = table.update_item(
                     Key={'id': '0'},
-                    UpdateExpression="ADD #cnt :val",
+                    UpdateExpression="ADD #cnt :val",  # tech col to insert incremental index, to be used as latest
                     ExpressionAttributeNames={'#cnt': 'count'},
                     ExpressionAttributeValues={':val': 1},
                     ReturnValues="UPDATED_NEW"
