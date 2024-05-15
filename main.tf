@@ -45,6 +45,11 @@ resource "aws_iam_role_policy_attachment" "test-attach-4" {
   policy_arn = "arn:aws:iam::aws:policy/AWSXRayDaemonWriteAccess"
 }
 
+resource "aws_iam_role_policy_attachment" "test-attach-5" {
+  role       = "${aws_iam_role.iam_for_lambda.name}"
+  policy_arn = "arn:aws:iam::aws:policy/AmazonDynamoDBFullAccess"
+}
+
 
 # create the filter lambda
 resource "aws_lambda_function" "func" {
@@ -119,7 +124,7 @@ resource "aws_dynamodb_table" "AlertsTable" {
 
   attribute {
     name = "id"
-    type = "N"
+    type = "S"
   }
 }
 
@@ -130,22 +135,22 @@ resource "aws_dynamodb_table_item" "seed_data" {
 
   for_each = {
       "0" = {
-          Level = "WARN"
-          Timestamp = "2022-10-12 23:12:52.453233"
-          Message = "Some warning"
+          level = "WARN"
+          timestamp = "2022-10-12 23:12:52.453233"
+          message = "Some warning"
       }
      "1" = {
-          Level = "ERROR"
-          Timestamp = "2023-09-17 17:12:22.676858"
-          Message = "Some error"
+          level = "ERROR"
+          timestamp = "2023-09-17 17:12:22.676858"
+          message = "Some error"
       }
   }
   item = <<ITEM
   {
-    "id": {"N": "${each.key}"},
-    "Level": {"S": "${each.value.Level}"},
-    "Timestamp": {"S": "${each.value.Timestamp}"},
-    "Message": {"S": "${each.value.Message}"}
+    "id": {"S": "${each.key}"},
+    "level": {"S": "${each.value.level}"},
+    "timestamp": {"S": "${each.value.timestamp}"},
+    "message": {"S": "${each.value.message}"}
   }
   ITEM
 }

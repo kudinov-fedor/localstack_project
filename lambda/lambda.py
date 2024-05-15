@@ -4,10 +4,12 @@ import boto3
 
 # configuration
 alerts_queue_name = "alerts-queue"
+table_name = "AlertsTable"
 
 # AWS SDK clients
 s3 = boto3.client("s3")
 sqs = boto3.client("sqs")
+dynamodb = boto3.resource('dynamodb')
 
 
 # =============
@@ -41,6 +43,7 @@ def handler(event, context):
         return
 
     # resolve the queue to publish alerts to
+    table = dynamodb.Table(table_name)
     alerts_queue_url = sqs.get_queue_url(QueueName=alerts_queue_name)['QueueUrl']
     log_content = read_changed_object(event)
 
@@ -62,8 +65,28 @@ def handler(event, context):
                 alert = {"timestamp": record['timestamp'], "level": "WARNING", "message": "High CPU utilization"}
 
             if alert:
-                print("alert", alert)
                 alerts.append(alert)
                 sqs.send_message(MessageBody=json.dumps(alert), QueueUrl=alerts_queue_url)
+
+                #  I add column 'count' with rowCount to existing first row,
+                #  and receive it as return value result of update
+                response = table.update_item(
+                    Key={'id': '0'},
+                    UpdateExpression="ADD #cnt :val",
+                    ExpressionAttributeNames={'#cnt': 'count'},
+                    ExpressionAttributeValues={':val': 1},
+                    ReturnValues="UPDATED_NEW"
+                )
+
+                nextId = response['Attributes']['count']
+                print(repr(nextId))
+
+                # Retrieve the new value
+                alert = dict(alert)
+                alert["id"] = str(nextId)
+
+                print("alert", alert)
+                table.put_item(Item=alert)
+
         except KeyError:
             pass
