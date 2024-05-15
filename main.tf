@@ -8,14 +8,6 @@ resource "aws_s3_bucket" "test-bucket" {
 resource "aws_iam_role" "iam_for_lambda" {
   name = "iam_for_lambda"
 
-  # todo add accesses to IAM role so that Lambda could
-  #  interact with S3, SQS and write logs for debug
-
-  #  AmazonS3FullAccess
-  #  AmazonSQSFullAccess
-  #  AWSLambdaBasicExecutionRole
-  #  AWSXRayDaemonWriteAccess
-
   # Trusted entities
   assume_role_policy = <<EOF
   {
@@ -31,6 +23,26 @@ resource "aws_iam_role" "iam_for_lambda" {
     ]
   }
   EOF
+}
+
+resource "aws_iam_role_policy_attachment" "test-attach-1" {
+  role       = "${aws_iam_role.iam_for_lambda.name}"
+  policy_arn = "arn:aws:iam::aws:policy/AmazonS3FullAccess"
+}
+
+resource "aws_iam_role_policy_attachment" "test-attach-2" {
+  role       = "${aws_iam_role.iam_for_lambda.name}"
+  policy_arn = "arn:aws:iam::aws:policy/AmazonSQSFullAccess"
+}
+
+resource "aws_iam_role_policy_attachment" "test-attach-3" {
+  role       = "${aws_iam_role.iam_for_lambda.name}"
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+}
+
+resource "aws_iam_role_policy_attachment" "test-attach-4" {
+  role       = "${aws_iam_role.iam_for_lambda.name}"
+  policy_arn = "arn:aws:iam::aws:policy/AWSXRayDaemonWriteAccess"
 }
 
 
