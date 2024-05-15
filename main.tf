@@ -108,3 +108,44 @@ resource "aws_sqs_queue" "test_queue" {
   }
   POLICY
 }
+
+
+# addd dynamo db and seed data
+resource "aws_dynamodb_table" "AlertsTable" {
+  name           = "AlertsTable"
+  read_capacity  = 1
+  write_capacity = 1
+  hash_key       = "id"
+
+  attribute {
+    name = "id"
+    type = "N"
+  }
+}
+
+# create some seed data
+resource "aws_dynamodb_table_item" "seed_data" {
+  table_name = aws_dynamodb_table.AlertsTable.name
+  hash_key   = aws_dynamodb_table.AlertsTable.hash_key
+
+  for_each = {
+      "0" = {
+          Level = "WARN"
+          Timestamp = "2022-10-12 23:12:52.453233"
+          Message = "Some warning"
+      }
+     "1" = {
+          Level = "ERROR"
+          Timestamp = "2023-09-17 17:12:22.676858"
+          Message = "Some error"
+      }
+  }
+  item = <<ITEM
+  {
+    "id": {"N": "${each.key}"},
+    "Level": {"S": "${each.value.Level}"},
+    "Timestamp": {"S": "${each.value.Timestamp}"},
+    "Message": {"S": "${each.value.Message}"}
+  }
+  ITEM
+}
