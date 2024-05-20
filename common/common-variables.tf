@@ -8,5 +8,5 @@ variable "region" {
 variable "project" {
   type = string
   description = "Project Name"
-  default = "my_project"
+  default = "my-project"
 }
