@@ -1,5 +1,5 @@
 resource "aws_s3_bucket" "test-bucket" {
-  bucket = "fkudi-terraform-test-bucket"
+  bucket = "${var.project}-bucket"
   force_destroy = true
 }
 
