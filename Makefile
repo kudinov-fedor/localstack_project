@@ -8,12 +8,17 @@ stop:
 	localstack stop
 
 
+prepare_lambda_layer:
+	python -m pip install -r requirements-lambda.txt -t lambda_layer/python/lib/python3.12/site-packages
+
+
 provision:
 	$(terraform) init
 	$(terraform) apply --auto-approve
 
 
 destroy:
+	$(terraform) init
 	$(terraform) destroy --auto-approve
 
 

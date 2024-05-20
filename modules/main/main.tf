@@ -3,30 +3,11 @@ resource "aws_s3_bucket" "test-bucket" {
   force_destroy = true
 }
 
-# helps to create zip with entrypoint file
-data "archive_file" "lambda" {
-  type = "zip"
-  output_path = "${path.cwd}/archives/lambda.zip"
-  source_file = "${path.cwd}/lambda/lambda.py"
-}
-
-# create the filter lambda
-resource "aws_lambda_function" "func" {
-  # instead of deploying the lambda from a zip file,
-  # we can also deploy it using local code mounting
-  filename      = data.archive_file.lambda.output_path
-  function_name = "example_lambda_name"
-  role          = var.iam_for_lambda_arn
-  handler       = "lambda.handler"
-  runtime       = "python3.10"
-}
-
-
 # allow the s3 bucket to invoke the lambda
 resource "aws_lambda_permission" "allow_bucket" {
   statement_id  = "AllowExecutionFromS3Bucket"
   action        = "lambda:InvokeFunction"
-  function_name = aws_lambda_function.func.arn
+  function_name = var.lambda_arn
   principal     = "s3.amazonaws.com"
   source_arn    = aws_s3_bucket.test-bucket.arn
 }
@@ -37,7 +18,7 @@ resource "aws_s3_bucket_notification" "bucket_notification" {
   bucket = aws_s3_bucket.test-bucket.id
 
   lambda_function {
-    lambda_function_arn = aws_lambda_function.func.arn
+    lambda_function_arn = var.lambda_arn
     events              = ["s3:ObjectCreated:*"]
     filter_suffix       = ".log"
   }
@@ -60,7 +41,7 @@ resource "aws_sqs_queue" "test_queue" {
         "Action": "sqs:SendMessage",
         "Resource": "arn:aws:sqs:*:*:alerts-queue",
         "Condition": {
-          "ArnEquals": { "aws:SourceArn": "${aws_lambda_function.func.arn}" }
+          "ArnEquals": { "aws:SourceArn": "${var.lambda_arn}" }
         }
       }
     ]

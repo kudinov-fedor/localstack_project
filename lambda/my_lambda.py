@@ -1,5 +1,5 @@
 import json
-
+import requests
 import boto3
 
 # configuration
@@ -37,6 +37,7 @@ def read_changed_object(event) -> str:
 
 def handler(event, context):
     print("invoking function")
+    print(requests.get("https://wikipedia.org"))
 
     if "Records" not in event:
         print("invocation not triggered by an event")
