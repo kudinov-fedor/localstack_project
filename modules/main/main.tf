@@ -1,19 +1,20 @@
 resource "aws_s3_bucket" "test-bucket" {
-  bucket = "${var.project}-my-awesome-bucket-123"
+  bucket = "fkudi-some-my-awesome-bucket-123"
   force_destroy = true
 }
 
+# helps to create zip with entrypoint file
+data "archive_file" "lambda" {
+  type = "zip"
+  output_path = "${path.cwd}/archives/lambda.zip"
+  source_file = "${path.cwd}/lambda/lambda.py"
+}
 
 # create the filter lambda
 resource "aws_lambda_function" "func" {
   # instead of deploying the lambda from a zip file,
   # we can also deploy it using local code mounting
-
-  # works only for localstack, using filename instead
-  #   s3_bucket = "__local__"
-  #   s3_key    = "${path.cwd}/lambda"
-
-  filename      = "lambda.zip"
+  filename      = data.archive_file.lambda.output_path
   function_name = "example_lambda_name"
   role          = var.iam_for_lambda_arn
   handler       = "lambda.handler"
