@@ -19,6 +19,14 @@ destroy:
 
 name =
 
+create_module:
+	mkdir modules/$(name)
+	ln -s ../../common/provider.tf modules/$(name)/provider.tf
+	ln -s ../../common/common-variables.tf modules/$(name)/common-variables.tf
+	touch modules/$(name)/main.tf
+	echo "\nmodule \"$(name)\" {\n  source = \"./modules/$(name)\"\n}" >> main.tf
+
+
 plan_module:
 	$(terraform) init && \
 	$(terraform) plan -target=module.$(name)
