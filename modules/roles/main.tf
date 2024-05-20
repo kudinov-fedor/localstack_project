@@ -1,23 +1,25 @@
 
+data "aws_iam_policy_document" "lambda_policy" {
+  version = "2012-10-17"
+
+  statement {
+    actions = ["sts:AssumeRole"]
+    effect = "Allow"
+
+    principals {
+      type        = "Service"
+      identifiers = ["lambda.amazonaws.com"]
+    }
+  }
+}
+
+
 # create an IAM role for the lambda
 resource "aws_iam_role" "iam_for_lambda" {
   name = "iam_for_lambda"
 
   # Trusted entities
-  assume_role_policy = <<EOF
-  {
-    "Version": "2012-10-17",
-    "Statement": [
-      {
-        "Action": "sts:AssumeRole",
-        "Principal": {
-          "Service": "lambda.amazonaws.com"
-        },
-        "Effect": "Allow"
-      }
-    ]
-  }
-  EOF
+  assume_role_policy = data.aws_iam_policy_document.lambda_policy.json
 }
 
 resource "aws_iam_role_policy_attachment" "test-attach-1" {
