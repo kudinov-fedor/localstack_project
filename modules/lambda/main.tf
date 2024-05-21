@@ -7,7 +7,7 @@ data "archive_file" "lambda_layer" {
 resource "aws_lambda_layer_version" "lambda_layer" {
   filename   = data.archive_file.lambda_layer.output_path
   layer_name = "lambda_layer_name"
-  compatible_runtimes = ["python3.12"]
+  compatible_runtimes = ["python3.8"]
 }
 
 
@@ -26,6 +26,6 @@ resource "aws_lambda_function" "func" {
   function_name = "example_lambda_name"
   role          = var.iam_for_lambda_arn
   handler       = "my_lambda.handler"
-  runtime       = "python3.12"
+  runtime       = "python3.8"
   layers = [aws_lambda_layer_version.lambda_layer.arn]
 }

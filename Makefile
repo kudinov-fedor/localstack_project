@@ -9,7 +9,9 @@ stop:
 
 
 prepare_lambda_layer:
-	python -m pip install -r requirements-lambda.txt -t lambda_layer/python/lib/python3.12/site-packages
+	rm -rf lambda_layer
+	chmod +x get_layer_packages.sh
+	./get_layer_packages.sh
 
 
 provision:
