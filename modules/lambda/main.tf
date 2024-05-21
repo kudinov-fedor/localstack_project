@@ -15,7 +15,7 @@ resource "aws_lambda_layer_version" "lambda_layer" {
 data "archive_file" "lambda" {
   type = "zip"
   output_path = "${path.cwd}/archives/my_lambda.zip"
-  source_file = "${path.cwd}/lambda/my_lambda.py"
+  source_file = "${path.cwd}/lambdas/my_lambda.py"
 }
 
 # create the filter lambda
