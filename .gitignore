@@ -9,3 +9,4 @@ terraform.tfstate.backup
 .DS_Store
 archives
 lambda_layer
+__pycache__

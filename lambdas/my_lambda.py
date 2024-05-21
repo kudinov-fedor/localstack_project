@@ -1,14 +1,18 @@
 import json
 import requests
 import boto3
+from aws_lambda_powertools.utilities.data_classes import APIGatewayProxyEvent
+from aws_lambda_powertools.utilities.typing import LambdaContext
+# from aws_lambda_powertools.utilities.validation import validator
+
 
 # configuration
 alerts_queue_name = "alerts-queue"
 table_name = "AlertsTable"
 
 # AWS SDK clients
-s3 = boto3.client("s3")
-sqs = boto3.client("sqs")
+s3 = boto3.resource("s3")
+sqs = boto3.resource("sqs")
 dynamodb = boto3.resource('dynamodb')
 
 
@@ -17,12 +21,12 @@ dynamodb = boto3.resource('dynamodb')
 # =============
 
 
-def read_s3_object(bucket, key) -> str:
+def read_s3_object(bucket: str, key: str) -> str:
     data = s3.get_object(Bucket=bucket, Key=key)
     return data["Body"].read().decode("utf-8")
 
 
-def read_changed_object(event) -> str:
+def read_changed_object(event: APIGatewayProxyEvent) -> str:
     s3_event = event["Records"][0]["s3"]
     bucket = s3_event["bucket"]["name"]
     key = s3_event["object"]["key"]
@@ -35,7 +39,8 @@ def read_changed_object(event) -> str:
 # ==============
 
 
-def handler(event, context):
+# @validator(inbound_schema=INPUT_SCHEMA, outbound_schema=OUTPUT_SCHEMA)
+def handler(event: APIGatewayProxyEvent, context: LambdaContext):
     print("invoking function")
     print(requests.get("https://wikipedia.org"))
 

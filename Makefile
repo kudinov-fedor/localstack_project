@@ -47,3 +47,12 @@ provision_module:
 destroy_module:
 	$(terraform) init && \
 	$(terraform) destroy --auto-approve -target=module.$(name)
+
+
+# unit testing
+setup_env:
+	python -m pip install -r requirements.txt
+	python -m pip install -r requirements-lambda.txt
+
+test:
+	python -m pytest tests

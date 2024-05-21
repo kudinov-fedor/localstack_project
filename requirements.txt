@@ -1,5 +1,6 @@
 # localstack
 terraform-local
 
-# lambda
-boto3
+# testing
+pytest
+pytest-mock
