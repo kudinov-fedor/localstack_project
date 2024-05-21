@@ -14,5 +14,10 @@ To run on AWS:
 To create new module and test:
 1. make create_module name=foo
 2. make plan_module name=foo
-2. make provision_module name=foo
-2. make destroy_module name=foo
+3. make provision_module name=foo
+4. make destroy_module name=foo
+
+For testing
+1. Create venv
+2. make setup_env
+3. make test
