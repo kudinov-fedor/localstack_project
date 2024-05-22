@@ -1,7 +1,12 @@
 import json
-
+import requests
 import boto3
 import pytest
+
+
+@pytest.fixture(autouse=True)
+def requests_mock(mocker):
+    mocker.patch.object(requests.api, "request")
 
 
 @pytest.fixture(autouse=True)

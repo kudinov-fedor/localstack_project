@@ -2,7 +2,7 @@ import json
 import pytest
 import requests
 import boto3
-from aws_lambda_powertools.utilities.data_classes import APIGatewayProxyEvent
+from aws_lambda_powertools.utilities.data_classes import S3Event
 from aws_lambda_powertools.utilities.typing import LambdaContext
 # from aws_lambda_powertools.utilities.validation import validator
 
@@ -25,17 +25,10 @@ dynamodb = boto3.resource('dynamodb')
 # =============
 
 
-def read_s3_object(bucket: str, key: str) -> str:
-    data = s3.get_object(Bucket=bucket, Key=key)
+def read_s3_object(event: S3Event) -> str:
+    data = s3.get_object(Bucket=event.bucket_name,
+                         Key=event.object_key)
     return data["Body"].read().decode("utf-8")
-
-
-def read_changed_object(event: APIGatewayProxyEvent) -> str:
-    s3_event = event["Records"][0]["s3"]
-    bucket = s3_event["bucket"]["name"]
-    key = s3_event["object"]["key"]
-
-    return read_s3_object(bucket, key)
 
 
 # ==============
@@ -44,7 +37,10 @@ def read_changed_object(event: APIGatewayProxyEvent) -> str:
 
 
 # @validator(inbound_schema=INPUT_SCHEMA, outbound_schema=OUTPUT_SCHEMA)
-def handler(event: APIGatewayProxyEvent, context: LambdaContext):
+def handler(event: dict | S3Event, context: LambdaContext):
+
+    event = S3Event(event)
+
     print("invoking function")
     print(requests.get("https://wikipedia.org"))
 
@@ -60,7 +56,7 @@ def handler(event: APIGatewayProxyEvent, context: LambdaContext):
     # resolve the queue to publish alerts to
     table = dynamodb.Table(table_name)
     alerts_queue_url = sqs.get_queue_url(QueueName=alerts_queue_name)['QueueUrl']
-    log_content = read_changed_object(event)
+    log_content = read_s3_object(event)
 
     print("log content")
     print(log_content)
