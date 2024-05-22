@@ -1,6 +1,9 @@
 # localstack
 terraform-local
 
+# aws
+boto3
+
 # testing
 pytest
 pytest-mock

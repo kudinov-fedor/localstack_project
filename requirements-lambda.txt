@@ -4,6 +4,5 @@ pytz
 numpy
 urllib3==1.26.6
 
-boto3
 aws-lambda-powertools
 fastjsonschema
