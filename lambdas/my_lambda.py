@@ -1,13 +1,8 @@
 import json
-import pytest
-import requests
 import boto3
 from aws_lambda_powertools.utilities.data_classes import S3Event
 from aws_lambda_powertools.utilities.typing import LambdaContext
 # from aws_lambda_powertools.utilities.validation import validator
-
-
-pytestmarks = pytest.mark.allow_hosts(['185.15.59.224'])  # allow wikipedia host
 
 
 # configuration
@@ -15,8 +10,8 @@ alerts_queue_name = "alerts-queue"
 table_name = "AlertsTable"
 
 # AWS SDK clients
-s3 = boto3.resource("s3")
-sqs = boto3.resource("sqs")
+s3 = boto3.client("s3")
+sqs = boto3.client("sqs")
 dynamodb = boto3.resource('dynamodb')
 
 
@@ -37,17 +32,18 @@ def read_s3_object(event: S3Event) -> str:
 
 
 # @validator(inbound_schema=INPUT_SCHEMA, outbound_schema=OUTPUT_SCHEMA)
-def handler(event: dict | S3Event, context: LambdaContext):
+def handler(event: dict, context: LambdaContext):
 
     event = S3Event(event)
 
     print("invoking function")
-    print(requests.get("https://wikipedia.org"))
+    # import requests
+    # print(requests.get("https://wikipedia.org"))
 
-    import numpy as np
-    import pandas as pd
-    s = pd.Series([1, 3, 5, np.nan, 6, 8])
-    print(s)
+    # import numpy as np
+    # import pandas as pd
+    # s = pd.Series([1, 3, 5, np.nan, 6, 8])
+    # print(s)
 
     if "Records" not in event:
         print("invocation not triggered by an event")
