@@ -1,9 +1,13 @@
 import json
+import pytest
 import requests
 import boto3
 from aws_lambda_powertools.utilities.data_classes import APIGatewayProxyEvent
 from aws_lambda_powertools.utilities.typing import LambdaContext
 # from aws_lambda_powertools.utilities.validation import validator
+
+
+pytestmarks = pytest.mark.allow_hosts(['185.15.59.224'])  # allow wikipedia host
 
 
 # configuration

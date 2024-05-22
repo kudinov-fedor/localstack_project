@@ -55,4 +55,4 @@ setup_env:
 	python -m pip install -r requirements-lambda.txt
 
 test:
-	python -m pytest tests
+	python -m pytest tests --disable-socket
