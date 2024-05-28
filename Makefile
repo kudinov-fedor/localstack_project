@@ -56,3 +56,11 @@ setup_env:
 
 test:
 	python -m pytest tests --disable-socket
+
+
+# work around for windows as symlink not supported
+update_commons:
+	cp -r --remove-destination common/* modules/db
+	cp -r --remove-destination common/* modules/roles
+	cp -r --remove-destination common/* modules/main
+	cp -r --remove-destination common/* modules/lambda
