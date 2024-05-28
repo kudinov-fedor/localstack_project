@@ -31,20 +31,20 @@ resource "aws_s3_bucket_notification" "bucket_notification" {
 resource "aws_sqs_queue" "test_queue" {
   name = "alerts-queue"
 
-  policy = <<POLICY
-  {
-    "Version": "2012-10-17",
-    "Statement": [
-      {
-        "Effect": "Allow",
-        "Principal": "*",
-        "Action": "sqs:SendMessage",
-        "Resource": "arn:aws:sqs:*:*:alerts-queue",
-        "Condition": {
-          "ArnEquals": { "aws:SourceArn": "${var.lambda_arn}" }
-        }
-      }
-    ]
-  }
-  POLICY
+#  policy = <<POLICY
+#  {
+#    "Version": "2012-10-17",
+#    "Statement": [
+#      {
+#        "Effect": "Allow",
+#        "Principal": "*",
+#        "Action": "sqs:SendMessage",
+#        "Resource": "arn:aws:sqs:*:*:alerts-queue",
+#        "Condition": {
+#          "ArnEquals": { "aws:SourceArn": "${var.lambda_arn}" }
+#        }
+#      }
+#    ]
+#  }
+#  POLICY
 }
