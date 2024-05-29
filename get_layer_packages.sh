@@ -7,7 +7,7 @@
 #}
 
 
-export PKG_DIR="lambda_layer/python/lib/python3.12/site-packages"
+export PKG_DIR="lambda_layer/python/lib/python3.8/site-packages"
 
 rm -rf ${PKG_DIR} && mkdir -p ${PKG_DIR}
 
