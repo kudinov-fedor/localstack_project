@@ -15,5 +15,6 @@ def handler(event: dict, context: LambdaContext):
     alerts_queue_url = sqs.get_queue_url(QueueName=alerts_queue_name)['QueueUrl']
 
     for record in event.records:
-        print(dict(record))
-        sqs.send_message(MessageBody=json.dumps(record), QueueUrl=alerts_queue_url)
+        if record.event_name == "INSERT":
+            print(dict(record))
+            sqs.send_message(MessageBody=json.dumps(dict(record)), QueueUrl=alerts_queue_url)

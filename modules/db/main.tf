@@ -5,6 +5,10 @@ resource "aws_dynamodb_table" "AlertsTable" {
   write_capacity = 1
   hash_key       = "id"
 
+  billing_mode     = "PROVISIONED"
+  stream_view_type = "NEW_IMAGE"
+  stream_enabled   = true
+
   attribute {
     name = "id"
     type = "S"

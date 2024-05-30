@@ -68,7 +68,14 @@ data "aws_iam_policy_document" "dynamo_db_create_policy" {
 
   statement {
     actions = ["dynamodb:PutItem",
-               "dynamodb:UpdateItem"]
+               "dynamodb:UpdateItem",
+
+               # to read dynamodb streams
+               "dynamodb:GetRecords",
+               "dynamodb:GetShardIterator",
+               "dynamodb:DescribeStream",
+               "dynamodb:ListStreams"
+    ]
     effect = "Allow"
     resources = ["*"]
   }
@@ -78,6 +85,29 @@ resource "aws_iam_policy" "dynamo_db_create_policy" {
   name        = "dynamo_db_create_policy"
   description = "dynam db create policy"
   policy = data.aws_iam_policy_document.dynamo_db_create_policy.json
+}
+
+
+data "aws_iam_policy_document" "lambda_log_access" {
+  version = "2012-10-17"
+
+  statement {
+      effect = "Allow"
+      resources = ["*"]
+      actions = [
+          "xray:PutTraceSegments",
+          "xray:PutTelemetryRecords",
+          "xray:GetSamplingRules",
+          "xray:GetSamplingTargets",
+          "xray:GetSamplingStatisticSummaries",
+      ]
+  }
+}
+
+resource "aws_iam_policy" "lambda_log_access" {
+  name = "lambda_log_access"
+  description = "lamda_log_access"
+  policy = data.aws_iam_policy_document.lambda_log_access.json
 }
 
 
@@ -99,7 +129,7 @@ resource "aws_iam_role_policy_attachment" "test-attach-3" {
 
 resource "aws_iam_role_policy_attachment" "test-attach-4" {
   role       = "${aws_iam_role.iam_for_lambda.name}"
-  policy_arn = "arn:aws:iam::aws:policy/AWSXRayDaemonWriteAccess"
+  policy_arn = aws_iam_policy.lambda_log_access.arn
 }
 
 resource "aws_iam_role_policy_attachment" "test-attach-5" {

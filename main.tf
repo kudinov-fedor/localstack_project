@@ -9,6 +9,7 @@ module "db" {
 module "lambda" {
   source = "./modules/lambda"
   iam_for_lambda_arn = module.roles.iam_for_lambda_arn
+  alerts_table = module.db.alerts_table
 }
 
 module "main" {

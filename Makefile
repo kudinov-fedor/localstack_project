@@ -14,6 +14,11 @@ prepare_lambda_layer:
 	./get_layer_packages.sh
 
 
+plan:
+	$(terraform) init
+	$(terraform) plan
+
+
 provision:
 	$(terraform) init
 	$(terraform) apply --auto-approve

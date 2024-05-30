@@ -48,3 +48,10 @@ resource "aws_lambda_function" "other_lambda_func" {
   runtime       = "python3.8"
   layers = [aws_lambda_layer_version.lambda_layer.arn]
 }
+
+# trigger by dynamoDb stream
+resource "aws_lambda_event_source_mapping" "example" {
+  event_source_arn  = var.alerts_table.stream_arn
+  function_name     = aws_lambda_function.other_lambda_func.arn
+  starting_position = "LATEST"
+}
