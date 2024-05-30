@@ -11,7 +11,6 @@ table_name = "AlertsTable"
 
 # AWS SDK clients
 s3 = boto3.client("s3")
-sqs = boto3.client("sqs")
 dynamodb = boto3.resource('dynamodb')
 
 
@@ -51,7 +50,6 @@ def handler(event: dict, context: LambdaContext):
 
     # resolve the queue to publish alerts to
     table = dynamodb.Table(table_name)
-    alerts_queue_url = sqs.get_queue_url(QueueName=alerts_queue_name)['QueueUrl']
     log_content = read_s3_object(event)
 
     print("log content")
@@ -73,7 +71,6 @@ def handler(event: dict, context: LambdaContext):
 
             if alert:
                 alerts.append(alert)
-                sqs.send_message(MessageBody=json.dumps(alert), QueueUrl=alerts_queue_url)
 
                 #  I add column 'count' with rowCount to existing first row,
                 #  and receive it as return value result of update
